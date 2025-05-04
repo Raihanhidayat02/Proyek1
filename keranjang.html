@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Keranjang Belanja - PULLER</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900 scroll-smooth">
+
+  <!-- Header -->
+  <header class="bg-gray-800 text-white p-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Keranjang Belanja</h1>
+      <a href="index.html" class="hover:underline">← Kembali ke Beranda</a>
+    </div>
+  </header>
+
+  <!-- Konten Keranjang -->
+  <main class="max-w-4xl mx-auto py-12 px-4">
+    <h2 class="text-3xl font-bold mb-6">Daftar Produk</h2>
+    
+    <div id="cart-items" class="space-y-6">
+      <!-- Daftar item keranjang ditampilkan dengan JavaScript -->
+    </div>
+
+    <div class="mt-10 text-right">
+      <p class="text-xl font-semibold mb-4">Total: <span id="cart-total">Rp 0</span></p>
+      <a href="checkout.html" class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition">Lanjut ke Checkout</a>
+    </div>
+  </main>
+
+  <!-- Script untuk menampilkan isi keranjang dari localStorage -->
+  <script>
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cartItemsContainer.innerHTML = '';
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="text-gray-600">Keranjang kosong.</p>';
+        cartTotal.textContent = 'Rp 0';
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        total += item.harga;
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'bg-white p-4 shadow rounded flex justify-between items-center';
+
+        itemEl.innerHTML = `
+          <div>
+            <h4 class="text-lg font-semibold">${item.nama}</h4>
+            <p class="text-gray-700">Rp ${item.harga.toLocaleString('id-ID')}</p>
+          </div>
+          <button onclick="hapusItem(${index})" class="text-red-500 hover:underline">Hapus</button>
+        `;
+
+        cartItemsContainer.appendChild(itemEl);
+      });
+
+      cartTotal.textContent = `Rp ${total.toLocaleString('id-ID')}`;
+    }
+
+    function hapusItem(index) {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>
